@@ -855,16 +855,48 @@ function actualizarCamposInicioTiempoReal() {
   const inputHora = document.getElementById('input-inicio-hora');
   
   // Solo actualizar si el usuario no está editando (no tienen foco)
-  if (inputFecha && document.activeElement !== inputFecha) {
+  if (inputFecha && document.activeElement !== inputFecha && !inputFecha.dataset.userEdited) {
     inputFecha.value = fecha;
   }
-  if (inputHora && document.activeElement !== inputHora) {
+  if (inputHora && document.activeElement !== inputHora && !inputHora.dataset.userEdited) {
     inputHora.value = hora;
   }
 }
 
 function iniciarActualizacionCamposInicio() {
   if (updateInicioFieldsInterval) clearInterval(updateInicioFieldsInterval);
+  
+  // Resetear flags de edición manual
+  const inputFecha = document.getElementById('input-inicio-fecha');
+  const inputHora = document.getElementById('input-inicio-hora');
+  if (inputFecha) delete inputFecha.dataset.userEdited;
+  if (inputHora) delete inputHora.dataset.userEdited;
+  
+  // Agregar listeners para detectar edición manual
+  if (inputFecha && !inputFecha.dataset.listenerAdded) {
+    inputFecha.addEventListener('change', function() {
+      this.dataset.userEdited = 'true';
+      document.getElementById('input-inicio-hora').dataset.userEdited = 'true';
+      setTimeout(() => {
+        delete this.dataset.userEdited;
+        delete document.getElementById('input-inicio-hora').dataset.userEdited;
+      }, 120000); // 2 minutos
+    });
+    inputFecha.dataset.listenerAdded = 'true';
+  }
+  
+  if (inputHora && !inputHora.dataset.listenerAdded) {
+    inputHora.addEventListener('change', function() {
+      this.dataset.userEdited = 'true';
+      document.getElementById('input-inicio-fecha').dataset.userEdited = 'true';
+      setTimeout(() => {
+        delete this.dataset.userEdited;
+        delete document.getElementById('input-inicio-fecha').dataset.userEdited;
+      }, 120000); // 2 minutos
+    });
+    inputHora.dataset.listenerAdded = 'true';
+  }
+  
   actualizarCamposInicioTiempoReal();
   updateInicioFieldsInterval = setInterval(actualizarCamposInicioTiempoReal, 1000);
 }
@@ -925,9 +957,7 @@ function actualizarUIJornada() {
     detenerActualizacionCamposInicio();
     
     // Iniciar actualización de campos de fin
-    actualizarCamposFinTiempoReal();
-    if (updateFinFieldsInterval) clearInterval(updateFinFieldsInterval);
-    updateFinFieldsInterval = setInterval(actualizarCamposFinTiempoReal, 1000);
+    iniciarActualizacionCamposFin();
     
     pill.className = 'status-pill active';
     statusTxt.textContent = 'Jornada activa';
@@ -1048,13 +1078,51 @@ function actualizarCamposFinTiempoReal() {
   const inputFecha = document.getElementById('input-fin-fecha');
   const inputHora = document.getElementById('input-fin-hora');
   
-  // Solo actualizar si el usuario no está editando (no tienen foco)
-  if (inputFecha && document.activeElement !== inputFecha) {
+  // Solo actualizar si el usuario no está editando
+  if (inputFecha && document.activeElement !== inputFecha && !inputFecha.dataset.userEdited) {
     inputFecha.value = fecha;
   }
-  if (inputHora && document.activeElement !== inputHora) {
+  if (inputHora && document.activeElement !== inputHora && !inputHora.dataset.userEdited) {
     inputHora.value = hora;
   }
+}
+
+function iniciarActualizacionCamposFin() {
+  if (updateFinFieldsInterval) clearInterval(updateFinFieldsInterval);
+  
+  // Resetear flags de edición manual
+  const inputFecha = document.getElementById('input-fin-fecha');
+  const inputHora = document.getElementById('input-fin-hora');
+  if (inputFecha) delete inputFecha.dataset.userEdited;
+  if (inputHora) delete inputHora.dataset.userEdited;
+  
+  // Agregar listeners para detectar edición manual
+  if (inputFecha && !inputFecha.dataset.listenerAdded) {
+    inputFecha.addEventListener('change', function() {
+      this.dataset.userEdited = 'true';
+      document.getElementById('input-fin-hora').dataset.userEdited = 'true';
+      setTimeout(() => {
+        delete this.dataset.userEdited;
+        delete document.getElementById('input-fin-hora').dataset.userEdited;
+      }, 120000); // 2 minutos
+    });
+    inputFecha.dataset.listenerAdded = 'true';
+  }
+  
+  if (inputHora && !inputHora.dataset.listenerAdded) {
+    inputHora.addEventListener('change', function() {
+      this.dataset.userEdited = 'true';
+      document.getElementById('input-fin-fecha').dataset.userEdited = 'true';
+      setTimeout(() => {
+        delete this.dataset.userEdited;
+        delete document.getElementById('input-fin-fecha').dataset.userEdited;
+      }, 120000); // 2 minutos
+    });
+    inputHora.dataset.listenerAdded = 'true';
+  }
+  
+  actualizarCamposFinTiempoReal();
+  updateFinFieldsInterval = setInterval(actualizarCamposFinTiempoReal, 1000);
 }
 
 async function finalizarJornada() {
