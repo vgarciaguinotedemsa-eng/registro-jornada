@@ -1055,6 +1055,15 @@ async function iniciarJornada() {
     return;
   }
   
+  // Validar que no sea fecha/hora futura
+  const fechaHoraSeleccionada = new Date(`${fecha}T${hora}:00`);
+  const ahora = new Date();
+  
+  if (fechaHoraSeleccionada > ahora) {
+    toast('No podés registrar una fecha/hora futura', 'error');
+    return;
+  }
+  
   const btn = document.getElementById('btn-inicio-jornada');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Registrando...';
@@ -1165,6 +1174,22 @@ async function finalizarJornada() {
   
   if (!fecha || !hora) {
     toast('Seleccioná fecha y hora de fin', 'error');
+    return;
+  }
+  
+  // Validar que no sea fecha/hora futura
+  const fechaHoraSeleccionada = new Date(`${fecha}T${hora}:00`);
+  const ahora = new Date();
+  
+  if (fechaHoraSeleccionada > ahora) {
+    toast('No podés registrar una fecha/hora futura', 'error');
+    return;
+  }
+  
+  // Validar que el fin sea después del inicio
+  const fechaInicio = new Date(STATE.jornadaActiva.inicio);
+  if (fechaHoraSeleccionada < fechaInicio) {
+    toast('El fin no puede ser antes del inicio', 'error');
     return;
   }
   
