@@ -854,9 +854,11 @@ function actualizarCamposInicioTiempoReal() {
   const inputFecha = document.getElementById('input-inicio-fecha');
   const inputHora = document.getElementById('input-inicio-hora');
   
-  // Verificar si pasaron 2 minutos desde la última edición
-  const lastEditTime = inputFecha?.dataset.lastEditTime || 0;
-  const timeSinceEdit = Date.now() - parseInt(lastEditTime);
+  // Verificar si pasaron 2 minutos desde la última edición (de cualquiera de los dos campos)
+  const lastEditTimeFecha = parseInt(inputFecha?.dataset.lastEditTime || 0);
+  const lastEditTimeHora = parseInt(inputHora?.dataset.lastEditTime || 0);
+  const lastEditTime = Math.max(lastEditTimeFecha, lastEditTimeHora);
+  const timeSinceEdit = Date.now() - lastEditTime;
   const twoMinutes = 120000; // 2 minutos en ms
   
   // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
@@ -1084,9 +1086,11 @@ function actualizarCamposFinTiempoReal() {
   const inputFecha = document.getElementById('input-fin-fecha');
   const inputHora = document.getElementById('input-fin-hora');
   
-  // Verificar si pasaron 2 minutos desde la última edición
-  const lastEditTime = inputFecha?.dataset.lastEditTime || 0;
-  const timeSinceEdit = Date.now() - parseInt(lastEditTime);
+  // Verificar si pasaron 2 minutos desde la última edición (de cualquiera de los dos campos)
+  const lastEditTimeFecha = parseInt(inputFecha?.dataset.lastEditTime || 0);
+  const lastEditTimeHora = parseInt(inputHora?.dataset.lastEditTime || 0);
+  const lastEditTime = Math.max(lastEditTimeFecha, lastEditTimeHora);
+  const timeSinceEdit = Date.now() - lastEditTime;
   const twoMinutes = 120000; // 2 minutos en ms
   
   // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
