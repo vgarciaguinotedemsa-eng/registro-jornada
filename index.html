@@ -594,8 +594,13 @@
               <input type="time" id="input-inicio-hora" style="font-size:14px; font-weight:600; padding:10px;">
             </div>
           </div>
-          <div style="font-size:11px; color:var(--accent); margin-bottom:12px; font-family:var(--font-mono);">
-            💡 Modificá si olvidaste registrar el inicio
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div style="font-size:11px; color:var(--accent); font-family:var(--font-mono);">
+              💡 Modificá si olvidaste registrar el inicio
+            </div>
+            <button onclick="resetearHoraInicio()" style="font-size:11px; padding:4px 8px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--accent); cursor:pointer; font-family:var(--font-mono);">
+              🔄 Ahora
+            </button>
           </div>
           <button class="btn btn-primary" id="btn-inicio-jornada" onclick="iniciarJornada()">
             🟢&nbsp; Iniciar Jornada
@@ -616,8 +621,13 @@
                 <input type="time" id="input-fin-hora" style="font-size:14px; font-weight:600; padding:10px;">
               </div>
             </div>
-            <div style="font-size:11px; color:var(--accent2); margin-bottom:12px; font-family:var(--font-mono);">
-              💡 Modificá si olvidaste registrar el fin
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-size:11px; color:var(--accent2); font-family:var(--font-mono);">
+                💡 Modificá si olvidaste registrar el fin
+              </div>
+              <button onclick="resetearHoraFin()" style="font-size:11px; padding:4px 8px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--accent2); cursor:pointer; font-family:var(--font-mono);">
+                🔄 Ahora
+              </button>
             </div>
             <div class="form-group" style="margin-bottom:12px;">
               <label class="form-label">Observaciones (opcional)</label>
@@ -847,58 +857,51 @@ function iniciarReloj() {
 }
 
 function actualizarCamposInicioTiempoReal() {
+  const inputFecha = document.getElementById('input-inicio-fecha');
+  const inputHora = document.getElementById('input-inicio-hora');
+  
+  if (inputFecha?.dataset.userEdited === 'true') return;
+  
   const now = new Date();
   const fecha = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const hora = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   
-  const inputFecha = document.getElementById('input-inicio-fecha');
-  const inputHora = document.getElementById('input-inicio-hora');
-  
-  // Verificar si pasaron 2 minutos desde la última edición (de cualquiera de los dos campos)
-  const lastEditTimeFecha = parseInt(inputFecha?.dataset.lastEditTime || 0);
-  const lastEditTimeHora = parseInt(inputHora?.dataset.lastEditTime || 0);
-  const lastEditTime = Math.max(lastEditTimeFecha, lastEditTimeHora);
-  const timeSinceEdit = Date.now() - lastEditTime;
-  const twoMinutes = 10000; // 10 segundos para testing // 2 minutos en ms
-  
-  // DEBUG - descomentar para ver valores
-  // if (lastEditTime > 0) console.log('Fecha timestamp:', lastEditTimeFecha, 'Hora timestamp:', lastEditTimeHora, 'Tiempo desde edit:', Math.floor(timeSinceEdit/1000), 's');
-  
-  // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
-  if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
+  if (inputFecha && document.activeElement !== inputFecha) {
     inputFecha.value = fecha;
   }
-  if (inputHora && document.activeElement !== inputHora && timeSinceEdit > twoMinutes) {
+  if (inputHora && document.activeElement !== inputHora) {
     inputHora.value = hora;
   }
+}
+
+function resetearHoraInicio() {
+  const inputFecha = document.getElementById('input-inicio-fecha');
+  const inputHora = document.getElementById('input-inicio-hora');
+  delete inputFecha?.dataset.userEdited;
+  delete inputHora?.dataset.userEdited;
+  actualizarCamposInicioTiempoReal();
 }
 
 function iniciarActualizacionCamposInicio() {
   if (updateInicioFieldsInterval) clearInterval(updateInicioFieldsInterval);
   
-  // Resetear timestamp
   const inputFecha = document.getElementById('input-inicio-fecha');
   const inputHora = document.getElementById('input-inicio-hora');
-  if (inputFecha) inputFecha.dataset.lastEditTime = '0';
-  if (inputHora) inputHora.dataset.lastEditTime = '0';
+  delete inputFecha?.dataset.userEdited;
+  delete inputHora?.dataset.userEdited;
   
   const handleEdit = () => {
-    const timestamp = Date.now().toString();
-    if (inputFecha) inputFecha.dataset.lastEditTime = timestamp;
-    if (inputHora) inputHora.dataset.lastEditTime = timestamp;
+    if (inputFecha) inputFecha.dataset.userEdited = 'true';
+    if (inputHora) inputHora.dataset.userEdited = 'true';
   };
   
-  // Agregar listeners para detectar edición manual
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
     inputFecha.addEventListener('change', handleEdit);
-    inputFecha.addEventListener('input', handleEdit);
     inputFecha.dataset.listenerAdded = 'true';
   }
   
   if (inputHora && !inputHora.dataset.listenerAdded) {
     inputHora.addEventListener('change', handleEdit);
-    inputHora.addEventListener('input', handleEdit);
-    inputFecha.addEventListener('input', handleEdit);
     inputHora.dataset.listenerAdded = 'true';
   }
   
@@ -1085,55 +1088,51 @@ async function iniciarJornada() {
 let updateFinFieldsInterval = null;
 
 function actualizarCamposFinTiempoReal() {
+  const inputFecha = document.getElementById('input-fin-fecha');
+  const inputHora = document.getElementById('input-fin-hora');
+  
+  if (inputFecha?.dataset.userEdited === 'true') return;
+  
   const now = new Date();
   const fecha = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const hora = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   
-  const inputFecha = document.getElementById('input-fin-fecha');
-  const inputHora = document.getElementById('input-fin-hora');
-  
-  // Verificar si pasaron 2 minutos desde la última edición (de cualquiera de los dos campos)
-  const lastEditTimeFecha = parseInt(inputFecha?.dataset.lastEditTime || 0);
-  const lastEditTimeHora = parseInt(inputHora?.dataset.lastEditTime || 0);
-  const lastEditTime = Math.max(lastEditTimeFecha, lastEditTimeHora);
-  const timeSinceEdit = Date.now() - lastEditTime;
-  const twoMinutes = 10000; // 10 segundos para testing // 2 minutos en ms
-  
-  // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
-  if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
+  if (inputFecha && document.activeElement !== inputFecha) {
     inputFecha.value = fecha;
   }
-  if (inputHora && document.activeElement !== inputHora && timeSinceEdit > twoMinutes) {
+  if (inputHora && document.activeElement !== inputHora) {
     inputHora.value = hora;
   }
+}
+
+function resetearHoraFin() {
+  const inputFecha = document.getElementById('input-fin-fecha');
+  const inputHora = document.getElementById('input-fin-hora');
+  delete inputFecha?.dataset.userEdited;
+  delete inputHora?.dataset.userEdited;
+  actualizarCamposFinTiempoReal();
 }
 
 function iniciarActualizacionCamposFin() {
   if (updateFinFieldsInterval) clearInterval(updateFinFieldsInterval);
   
-  // Resetear timestamp
   const inputFecha = document.getElementById('input-fin-fecha');
   const inputHora = document.getElementById('input-fin-hora');
-  if (inputFecha) inputFecha.dataset.lastEditTime = '0';
-  if (inputHora) inputHora.dataset.lastEditTime = '0';
+  delete inputFecha?.dataset.userEdited;
+  delete inputHora?.dataset.userEdited;
   
   const handleEdit = () => {
-    const timestamp = Date.now().toString();
-    if (inputFecha) inputFecha.dataset.lastEditTime = timestamp;
-    if (inputHora) inputHora.dataset.lastEditTime = timestamp;
+    if (inputFecha) inputFecha.dataset.userEdited = 'true';
+    if (inputHora) inputHora.dataset.userEdited = 'true';
   };
   
-  // Agregar listeners para detectar edición manual
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
     inputFecha.addEventListener('change', handleEdit);
-    inputFecha.addEventListener('input', handleEdit);
     inputFecha.dataset.listenerAdded = 'true';
   }
   
   if (inputHora && !inputHora.dataset.listenerAdded) {
     inputHora.addEventListener('change', handleEdit);
-    inputHora.addEventListener('input', handleEdit);
-    inputFecha.addEventListener('input', handleEdit);
     inputHora.dataset.listenerAdded = 'true';
   }
   
