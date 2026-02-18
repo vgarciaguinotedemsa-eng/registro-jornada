@@ -975,11 +975,11 @@ function actualizarUIJornada() {
     cardUltima.style.display = 'none';
 
     const dt = new Date(STATE.jornadaActiva.inicio);
-    const dia = dt.getDate();
-    const mes = dt.toLocaleDateString('es-AR', { month: 'short' });
+    const dia = String(dt.getDate()).padStart(2,'0');
+    const mes = String(dt.getMonth()+1).padStart(2,'0');
     const hora = String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
     
-    document.getElementById('jornada-inicio-display').textContent = `${dia} ${mes} • ${hora}`;
+    document.getElementById('jornada-inicio-display').textContent = `${dia}/${mes} • ${hora}`;
   } else {
     // Detener actualización de campos de fin
     if (updateFinFieldsInterval) {
@@ -1006,12 +1006,31 @@ function actualizarUIJornada() {
         
         const dInicio = new Date(u.inicio);
         const dFin = new Date(u.fin);
-        const fechaStr = dInicio.toLocaleDateString('es-AR', { day:'numeric', month:'short', year:'numeric' });
+        
+        // Verificar si inicio y fin son el mismo día
+        const mismoDia = dInicio.getDate() === dFin.getDate() && 
+                         dInicio.getMonth() === dFin.getMonth() && 
+                         dInicio.getFullYear() === dFin.getFullYear();
+        
         const horaInicio = fmtHora(dInicio);
         const horaFin = fmtHora(dFin);
         
-        document.getElementById('fin-fecha-horario-display').textContent = 
-          `${fechaStr} • ${horaInicio} - ${horaFin}`;
+        let displayText;
+        if (mismoDia) {
+          // Mismo día: "09/02 • 09:00 - 22:48"
+          const dia = String(dInicio.getDate()).padStart(2,'0');
+          const mes = String(dInicio.getMonth()+1).padStart(2,'0');
+          displayText = `${dia}/${mes} • ${horaInicio} - ${horaFin}`;
+        } else {
+          // Días diferentes: "09/02 09:00 - 10/02 22:48"
+          const diaIni = String(dInicio.getDate()).padStart(2,'0');
+          const mesIni = String(dInicio.getMonth()+1).padStart(2,'0');
+          const diaFin = String(dFin.getDate()).padStart(2,'0');
+          const mesFin = String(dFin.getMonth()+1).padStart(2,'0');
+          displayText = `${diaIni}/${mesIni} ${horaInicio} - ${diaFin}/${mesFin} ${horaFin}`;
+        }
+        
+        document.getElementById('fin-fecha-horario-display').textContent = displayText;
         document.getElementById('fin-duracion').textContent = calcDuracion(dInicio, dFin);
       } catch(e) { cardUltima.style.display = 'none'; }
     } else {
