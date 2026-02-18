@@ -861,6 +861,9 @@ function actualizarCamposInicioTiempoReal() {
   const timeSinceEdit = Date.now() - lastEditTime;
   const twoMinutes = 10000; // 10 segundos para testing // 2 minutos en ms
   
+  // DEBUG - descomentar para ver valores
+  // if (lastEditTime > 0) console.log('Fecha timestamp:', lastEditTimeFecha, 'Hora timestamp:', lastEditTimeHora, 'Tiempo desde edit:', Math.floor(timeSinceEdit/1000), 's');
+  
   // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
   if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
     inputFecha.value = fecha;
@@ -888,11 +891,14 @@ function iniciarActualizacionCamposInicio() {
   // Agregar listeners para detectar edición manual
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
     inputFecha.addEventListener('change', handleEdit);
+    inputFecha.addEventListener('input', handleEdit);
     inputFecha.dataset.listenerAdded = 'true';
   }
   
   if (inputHora && !inputHora.dataset.listenerAdded) {
     inputHora.addEventListener('change', handleEdit);
+    inputHora.addEventListener('input', handleEdit);
+    inputFecha.addEventListener('input', handleEdit);
     inputHora.dataset.listenerAdded = 'true';
   }
   
@@ -1120,11 +1126,14 @@ function iniciarActualizacionCamposFin() {
   // Agregar listeners para detectar edición manual
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
     inputFecha.addEventListener('change', handleEdit);
+    inputFecha.addEventListener('input', handleEdit);
     inputFecha.dataset.listenerAdded = 'true';
   }
   
   if (inputHora && !inputHora.dataset.listenerAdded) {
     inputHora.addEventListener('change', handleEdit);
+    inputHora.addEventListener('input', handleEdit);
+    inputFecha.addEventListener('input', handleEdit);
     inputHora.dataset.listenerAdded = 'true';
   }
   
