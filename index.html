@@ -589,18 +589,18 @@
               <label style="font-size:10px; color:var(--muted); display:block; margin-bottom:4px; font-family:var(--font-mono);">FECHA</label>
               <input type="date" id="input-inicio-fecha" style="font-size:14px; font-weight:600; padding:10px;">
             </div>
-            <div>
-              <label style="font-size:10px; color:var(--muted); display:block; margin-bottom:4px; font-family:var(--font-mono);">HORA</label>
-              <input type="time" id="input-inicio-hora" style="font-size:14px; font-weight:600; padding:10px;">
+            <div style="display:flex; gap:6px; align-items:flex-end;">
+              <div style="flex:1;">
+                <label style="font-size:10px; color:var(--muted); display:block; margin-bottom:4px; font-family:var(--font-mono);">HORA</label>
+                <input type="time" id="input-inicio-hora" style="font-size:14px; font-weight:600; padding:10px; width:100%;">
+              </div>
+              <button onclick="resetearHoraInicio()" title="Volver a hora actual" style="font-size:18px; padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--accent); cursor:pointer; height:44px; width:44px; display:flex; align-items:center; justify-content:center;">
+                🔄
+              </button>
             </div>
           </div>
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <div style="font-size:11px; color:var(--accent); font-family:var(--font-mono);">
-              💡 Modificá si olvidaste registrar el inicio
-            </div>
-            <button onclick="resetearHoraInicio()" style="font-size:11px; padding:4px 8px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--accent); cursor:pointer; font-family:var(--font-mono);">
-              🔄 Ahora
-            </button>
+          <div style="font-size:11px; color:var(--accent); margin-bottom:12px; font-family:var(--font-mono);">
+            💡 Modificá si olvidaste registrar el inicio
           </div>
           <button class="btn btn-primary" id="btn-inicio-jornada" onclick="iniciarJornada()">
             🟢&nbsp; Iniciar Jornada
@@ -616,18 +616,18 @@
                 <label style="font-size:10px; color:var(--muted); display:block; margin-bottom:4px; font-family:var(--font-mono);">FECHA</label>
                 <input type="date" id="input-fin-fecha" style="font-size:14px; font-weight:600; padding:10px;">
               </div>
-              <div>
-                <label style="font-size:10px; color:var(--muted); display:block; margin-bottom:4px; font-family:var(--font-mono);">HORA</label>
-                <input type="time" id="input-fin-hora" style="font-size:14px; font-weight:600; padding:10px;">
+              <div style="display:flex; gap:6px; align-items:flex-end;">
+                <div style="flex:1;">
+                  <label style="font-size:10px; color:var(--muted); display:block; margin-bottom:4px; font-family:var(--font-mono);">HORA</label>
+                  <input type="time" id="input-fin-hora" style="font-size:14px; font-weight:600; padding:10px; width:100%;">
+                </div>
+                <button onclick="resetearHoraFin()" title="Volver a hora actual" style="font-size:18px; padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--accent2); cursor:pointer; height:44px; width:44px; display:flex; align-items:center; justify-content:center;">
+                  🔄
+                </button>
               </div>
             </div>
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-size:11px; color:var(--accent2); font-family:var(--font-mono);">
-                💡 Modificá si olvidaste registrar el fin
-              </div>
-              <button onclick="resetearHoraFin()" style="font-size:11px; padding:4px 8px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--accent2); cursor:pointer; font-family:var(--font-mono);">
-                🔄 Ahora
-              </button>
+            <div style="font-size:11px; color:var(--accent2); margin-bottom:12px; font-family:var(--font-mono);">
+              💡 Modificá si olvidaste registrar el fin
             </div>
             <div class="form-group" style="margin-bottom:12px;">
               <label class="form-label">Observaciones (opcional)</label>
