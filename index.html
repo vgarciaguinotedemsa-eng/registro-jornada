@@ -859,7 +859,7 @@ function actualizarCamposInicioTiempoReal() {
   const lastEditTimeHora = parseInt(inputHora?.dataset.lastEditTime || 0);
   const lastEditTime = Math.max(lastEditTimeFecha, lastEditTimeHora);
   const timeSinceEdit = Date.now() - lastEditTime;
-  const twoMinutes = 120000; // 2 minutos en ms
+  const twoMinutes = 10000; // 10 segundos para testing // 2 minutos en ms
   
   // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
   if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
@@ -1091,7 +1091,7 @@ function actualizarCamposFinTiempoReal() {
   const lastEditTimeHora = parseInt(inputHora?.dataset.lastEditTime || 0);
   const lastEditTime = Math.max(lastEditTimeFecha, lastEditTimeHora);
   const timeSinceEdit = Date.now() - lastEditTime;
-  const twoMinutes = 120000; // 2 minutos en ms
+  const twoMinutes = 10000; // 10 segundos para testing // 2 minutos en ms
   
   // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
   if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
