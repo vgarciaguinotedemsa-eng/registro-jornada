@@ -564,6 +564,10 @@
               <label>Inicio</label>
               <span id="jornada-inicio-display">--:--</span>
             </div>
+            <div class="jornada-field accent" style="grid-column: 1 / -1;">
+              <label style="font-size:10px; color:var(--muted);">Fecha</label>
+              <span id="jornada-fecha-display" style="font-size:12px; color:var(--muted);">--</span>
+            </div>
           </div>
         </div>
 
@@ -975,8 +979,28 @@ function actualizarUIJornada() {
     cardUltima.style.display = 'none';
 
     const dt = new Date(STATE.jornadaActiva.inicio);
-    document.getElementById('jornada-inicio-display').textContent =
-      String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+    const hoy = new Date();
+    const esHoy = dt.getDate() === hoy.getDate() && 
+                  dt.getMonth() === hoy.getMonth() && 
+                  dt.getFullYear() === hoy.getFullYear();
+    
+    const hora = String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+    
+    if (esHoy) {
+      document.getElementById('jornada-inicio-display').textContent = hora;
+    } else {
+      const fecha = dt.toLocaleDateString('es-AR', { day:'numeric', month:'short' });
+      document.getElementById('jornada-inicio-display').textContent = `${fecha} • ${hora}`;
+    }
+    
+    // Mostrar fecha
+    const fechaStr = dt.toLocaleDateString('es-AR', { 
+      weekday: 'short', 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+    document.getElementById('jornada-fecha-display').textContent = fechaStr;
   } else {
     // Detener actualización de campos de fin
     if (updateFinFieldsInterval) {
